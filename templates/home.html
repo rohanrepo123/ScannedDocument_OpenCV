@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document Scanner</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 30px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+        }
+
+        input[type="file"] {
+            padding: 8px;
+            margin-top: 10px;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        img {
+            margin: 20px auto;
+            max-width: 90%;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #007bff;
+            font-weight: 500;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .section {
+            background-color: white;
+            padding: 20px;
+            margin: 40px auto;
+            border-radius: 10px;
+            max-width: 900px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="section">
+        <h2>Upload a Document to Scan</h2>
+        <form action="/scan" method="POST" enctype="multipart/form-data">
+            <label for="profile_image"><strong>Select Image:</strong></label><br>
+            <input type="file" id="profile_image" name="profile_image" accept="image/*" required>
+            <br><br>
+            <input type="submit" value="Scan Document">
+        </form>
+    </div>
+    
+    {% if org_img %}
+    <div class="section">
+        <h2>Original Image</h2>
+        <img src="data:image/png;base64,{{ org_img }}" alt="Original Image">
+    </div>
+    {% endif %}
+    
+    {% if canny_img %}
+    <div class="section">
+        <h2>Outlined Image</h2>
+        <img src="data:image/png;base64,{{ canny_img }}" alt="Original Image">
+    </div>
+    {% endif %}
+    {% if scanned_image %}
+    <div class="section">
+        <h2>Scanned Output</h2>
+        <img src="data:image/png;base64,{{ scanned_image }}" alt="Scanned Image">
+        <br><br>
+        <a href="/">← Scan another document</a>
+    </div>
+    {% endif %}
+
+
+    {% if out_img %}
+    <div class="section">
+        <h2>Outlined Output</h2>
+        <img src="data:image/png;base64,{{ out_img }}" alt="Outlined Image">
+    </div>
+    {% endif %}
+<table border="1" cellspacing="0" cellpadding="8">
+    <thead>
+        <tr>
+            <th>Line</th>
+            <th>Joint</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% set max_len = [lines|length, joint|length]|max %}
+        {% for i in range(max_len) %}
+        <tr>
+            <td>{{ lines[i] if i < lines|length else '' }}</td>
+            <td>{{ joint[i] if i < joint|length else '' }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+    
+</body>
+</html>
